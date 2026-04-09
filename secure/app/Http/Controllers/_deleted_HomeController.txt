@@ -1,0 +1,1 @@
+HomeController no longer used; root route now redirects to login/dashboard. File kept as a placeholder to avoid accidental reintroduction.
