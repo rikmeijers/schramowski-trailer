@@ -1,7 +1,6 @@
 /.fleet
 /.idea
 /.nova
-/.phpunit.cache
 /.vscode
 /.zed
 /auth.json
@@ -24,7 +23,6 @@ composer.phar
 composer.lock
 .DS_Store
 .phpactor.json
-.phpunit.result.cache
 Homestead.json
 Homestead.yaml
 Thumbs.db
