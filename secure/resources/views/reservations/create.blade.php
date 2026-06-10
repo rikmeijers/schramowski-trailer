@@ -40,7 +40,7 @@
 
             <div class="col-12 col-md-3">
                 <label class="form-label fw-semibold"><i class="bi bi-calendar-event me-1"></i> Startdatum <span class="text-danger">*</span></label>
-                <input type="date" name="start_date" value="{{ old('start_date') }}"
+                <input type="date" name="start_date" value="{{ old('start_date', request('start_date')) }}"
                        class="form-control @error('start_date') is-invalid @enderror" />
                 @error('start_date')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -49,7 +49,7 @@
 
             <div class="col-12 col-md-3">
                 <label class="form-label fw-semibold"><i class="bi bi-calendar-event me-1"></i> Enddatum <span class="text-danger">*</span></label>
-                <input type="date" name="end_date" value="{{ old('end_date') }}"
+                <input type="date" name="end_date" value="{{ old('end_date', request('end_date')) }}"
                        class="form-control @error('end_date') is-invalid @enderror" />
                 @error('end_date')
                 <div class="invalid-feedback">{{ $message }}</div>

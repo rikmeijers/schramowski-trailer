@@ -194,17 +194,21 @@ document.addEventListener('DOMContentLoaded', () => {
     endInput.type = 'text';
 
     const initialStart = parseYmd(startInput.value);
-    const minDateForForm = isEdit ? null : today;
+    const initialEnd = parseYmd(endInput.value);
+    const prefillFromPast = !isEdit && initialStart && initialStart < today;
+    const minDateForForm = isEdit || prefillFromPast ? null : today;
 
     const common = {
       dateFormat: 'Y-m-d',
       allowInput: true,
       minDate: minDateForForm,
       disableMobile: true,
+      // German locale is set globally via flatpickr.localize() in flatpickr-global.js
     };
 
     startPicker = window.flatpickr(startInput, {
       ...common,
+      defaultDate: initialStart || undefined,
       onChange: function (selectedDates, dateStr) {
         // Ensure end can't be before start
         if (endPicker) {
@@ -233,6 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     endPicker = window.flatpickr(endInput, {
       ...common,
+      defaultDate: initialEnd || undefined,
       onChange: function () {
         applyValidity();
       },

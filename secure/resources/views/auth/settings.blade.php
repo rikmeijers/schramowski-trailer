@@ -7,19 +7,6 @@
 
 @section('customStyles')
     <link rel="stylesheet" href="{{ url('/assets/css/settings.css') }}">
-    <style>
-        .nav-link.settings {
-            background-color: var(--bs-primary);
-            color: #fff;
-        }
-
-        .nav-link.settings:hover {
-            background-color: var(--bs-primary);
-            color: #fff !important;
-            transform: none;
-            cursor: default;
-        }
-    </style>
 @endsection
 
 @section('content')

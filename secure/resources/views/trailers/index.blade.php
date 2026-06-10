@@ -13,33 +13,33 @@
             </p>
         </div>
 
-        <a href="{{ route('reservations.create') }}" class="btn btn-primary rounded-pill px-4">
+        <a href="{{ route('reservations.create') }}" class="btn btn-primary  px-4">
             <i class="bi bi-plus-circle me-2"></i> Neue Reservierung
         </a>
     </div>
 
     @if (session('success'))
-        <div class="alert alert-success border-0 shadow-sm rounded-4 mt-3">
+        <div class="alert alert-success  mt-3">
             {{ session('success') }}
         </div>
     @endif
 
     <div class="card ui-card ui-card-pad mt-3">
-        <form method="GET" action="{{ route('trailers.index') }}" class="row g-3 align-items-end">
+        <form method="GET" action="{{ route('trailers.index') }}" class="row g-3 align-items-end" data-linked-dates>
             <div class="col-12 col-md-4">
                 <label class="form-label fw-semibold">Von</label>
-                <input type="date" name="from" value="{{ $filterFrom ?? '' }}" class="form-control" />
+                <input type="date" name="from" value="{{ $filterFrom ?? '' }}" class="form-control" data-link-from />
             </div>
             <div class="col-12 col-md-4">
                 <label class="form-label fw-semibold">Bis einschließlich</label>
-                <input type="date" name="to" value="{{ $filterTo ?? '' }}" class="form-control" />
+                <input type="date" name="to" value="{{ $filterTo ?? '' }}" class="form-control" data-link-to />
             </div>
             <div class="col-12 col-md-4">
                 <div class="d-flex gap-2 mt-2 justify-content-md-end">
-                    <button class="btn btn-outline-primary rounded-pill px-4" type="submit">
+                    <button class="btn btn-outline-primary  px-4" type="submit">
                         <i class="bi bi-funnel me-2"></i> Filter
                     </button>
-                    <a class="btn btn-outline-secondary rounded-pill px-4" href="{{ route('trailers.index') }}">
+                    <a class="btn btn-outline-secondary  px-4" href="{{ route('trailers.index') }}">
                         Reset
                     </a>
                 </div>
@@ -96,7 +96,7 @@
 
                         <div class="ui-trailer-spacer"></div>
 
-                        <a href="{{ route('reservations.create', ['trailer_id' => $trailer->id]) }}" class="btn btn-outline-primary">
+                        <a href="{{ route('reservations.create', array_filter(['trailer_id' => $trailer->id, 'start_date' => $filterFrom ?? null, 'end_date' => $filterTo ?? null])) }}" class="btn btn-outline-primary">
                             Reservieren
                         </a>
                     </div>
@@ -106,7 +106,7 @@
 
         @if(($cards ?? collect())->isEmpty())
             <div class="col-12">
-                <div class="alert alert-info border-0 shadow-sm rounded-4 mt-3">
+                <div class="alert alert-info  mt-3">
                     Keine Anhänger für diesen Filter gefunden.
                 </div>
             </div>

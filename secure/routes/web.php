@@ -54,6 +54,7 @@ Route::middleware(['auth', 'employee'])->group(function () {
     Route::get('/dashboard/reservation/{id}', [DashboardController::class, 'showReservation'])->name('dashboard.reservation.show');
     Route::delete('/dashboard/reservation/{id}', [DashboardController::class, 'destroyReservation'])->name('dashboard.reservation.destroy');
 
+    Route::get('/dashboard/calendar-data', [DashboardController::class, 'calendarData'])->name('dashboard.calendar.data');
     Route::get('/dashboard/print/next-week', [DashboardController::class, 'printNextWeek'])->name('dashboard.print.next_week');
     Route::get('/dashboard/print/range', [DashboardController::class, 'printRange'])->name('dashboard.print.range');
 

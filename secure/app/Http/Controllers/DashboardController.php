@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservation;
+use App\Models\Trailer;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Redirect;
 
 class DashboardController extends Controller
@@ -27,10 +29,21 @@ class DashboardController extends Controller
             ->orderBy('start_date')
             ->get();
 
+        // Stats for the summary bar
+        $stats = [
+            'total'     => $reservations->count(),
+            'confirmed' => $reservations->where('status', 'confirmed')->count(),
+            'pending'   => $reservations->where('status', 'pending')->count(),
+            'paid'      => $reservations->where('payment_status', 'paid')->count(),
+            'partial'   => $reservations->where('payment_status', 'partial')->count(),
+            'unpaid'    => $reservations->where('payment_status', 'unpaid')->count(),
+        ];
+
         return view('dashboard', [
             'title' => 'Übersicht',
             'reservations' => $reservations,
             'showAll' => $showAll,
+            'stats' => $stats,
         ]);
     }
 
@@ -100,6 +113,35 @@ class DashboardController extends Controller
             'title' => 'Benutzer hinzufügen',
             'header' => false,
             'footer' => false,
+        ]);
+    }
+
+    public function calendarData(): JsonResponse
+    {
+        $from = request()->filled('from')
+            ? Carbon::createFromFormat('Y-m-d', (string) request()->input('from'))->startOfDay()
+            : now()->startOfWeek();
+
+        $to = request()->filled('to')
+            ? Carbon::createFromFormat('Y-m-d', (string) request()->input('to'))->startOfDay()
+            : $from->copy()->addWeeks(2);
+
+        $trailers = Trailer::where('is_active', true)->orderBy('code')->get(['id', 'code', 'name']);
+
+        $reservations = Reservation::with([])
+            ->whereNotNull('start_date')
+            ->whereNotNull('end_date')
+            ->overlappingDates($from, $to)
+            ->orderBy('start_date')
+            ->get([
+                'id', 'trailer_id', 'start_date', 'end_date',
+                'customer_first_name', 'customer_last_name',
+                'status', 'payment_status',
+            ]);
+
+        return response()->json([
+            'trailers' => $trailers,
+            'reservations' => $reservations,
         ]);
     }
 

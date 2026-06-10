@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -16,6 +16,10 @@
     <link rel="icon" href="{{ url('/assets/images/branding/icon.png') }}">
     <link rel="apple-touch-icon" href="{{ url('/assets/images/branding/icon.png') }}">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="{{ url('/assets/css/core/root.css') }}">
     <link rel="stylesheet" href="{{ url('/assets/css/core/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url('/assets/css/core/bootstrap-icons.min.css') }}">
@@ -27,8 +31,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     @yield('customStyles')
-
-    <script src="{{ url('/assets/js/core/theme.min.js') }}"></script>
 
     <title>
         {{ config('app.name', 'App') }} – Anhänger-Reservierungen{{ isset($title) ? ' | ' . $title : '' }}
@@ -58,6 +60,7 @@
     <script src="{{ url('/assets/js/global.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="{{ url('/assets/js/flatpickr-global.js') }}"></script>
+    <script src="{{ url('/assets/js/flatpickr-bootstrap-dropdown-fix.js') }}"></script>
 
     @yield('customScripts')
 </body>

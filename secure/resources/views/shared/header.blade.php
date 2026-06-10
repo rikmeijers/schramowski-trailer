@@ -19,17 +19,17 @@
             <ul class="navbar-nav ms-auto">
                 @if(auth()->check())
                     <li class="nav-item">
-                        <a class="nav-link px-3 py-2 rounded-pill me-2 dashboard {{ request()->routeIs('dashboard*') ? 'active' : '' }}" href="{{ route('dashboard') }}">Übersicht</a>
+                        <a class="nav-link px-3 py-2 me-2 dashboard {{ request()->routeIs('dashboard*') ? 'active' : '' }}" href="{{ route('dashboard') }}">Übersicht</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3 py-2 rounded-pill me-2 trailers {{ (request()->routeIs('trailers.*') || request()->routeIs('reservations.*')) ? 'active' : '' }}" href="{{ route('trailers.index') }}">Anhänger</a>
+                        <a class="nav-link px-3 py-2 me-2 trailers {{ (request()->routeIs('trailers.*') || request()->routeIs('reservations.*')) ? 'active' : '' }}" href="{{ route('trailers.index') }}">Anhänger</a>
                     </li>
                     @can('admin')
                         <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-pill me-2 users {{ (request()->routeIs('users.index') || request()->routeIs('users.destroy')) ? 'active' : '' }}" href="{{ route('users.index') }}">Benutzer</a>
+                            <a class="nav-link px-3 py-2 me-2 users {{ (request()->routeIs('users.index') || request()->routeIs('users.destroy')) ? 'active' : '' }}" href="{{ route('users.index') }}">Benutzer</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-pill me-2 register {{ request()->routeIs('register.*') ? 'active' : '' }}" href="{{ route('register.form') }}">Benutzer hinzufügen</a>
+                            <a class="nav-link px-3 py-2 me-2 register {{ request()->routeIs('register.*') ? 'active' : '' }}" href="{{ route('register.form') }}">Benutzer hinzufügen</a>
                         </li>
                     @endcan
                 @endif
@@ -37,36 +37,28 @@
 
             <ul class="navbar-nav ms-auto">
                 @if(auth()->check())
+                    <li class="nav-item d-flex align-items-center me-2">
+                        <a class="nav-link px-3 py-2 settings {{ request()->routeIs('settings.*') ? 'active' : '' }}" href="{{ url('/settings') }}">
+                            <i class="bi bi-gear"></i>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <form id="logout-form" action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button type="submit"
-                                    class="nav-link px-3 py-2 fw-normal rounded-pill btn d-flex align-items-center">
+                                    class="nav-link px-3 py-2 fw-normal btn d-flex align-items-center">
                                 <i class="bi bi-box-arrow-right me-2"></i> Abmelden
                             </button>
                         </form>
                     </li>
                 @else
                     <li class="nav-item">
-                        <a class="nav-link px-3 py-2 rounded-pill login d-flex align-items-center"
+                        <a class="nav-link px-3 py-2 login d-flex align-items-center"
                            href="{{ url('/login') }}">
                             <i class="bi bi-box-arrow-in-right me-2"></i> Anmelden
                         </a>
                     </li>
                 @endif
-                <li class="nav-item d-flex align-items-center ms-2">
-                    @if(auth()->check())
-                        <a class="nav-link px-3 py-2 rounded-pill settings {{ request()->routeIs('settings.*') ? 'active' : '' }}" href="{{ url('/settings') }}">
-                            <i class="bi bi-gear"></i>
-                        </a>
-                    @endif
-                    <button id="theme-switcher" class="btn px-3 py-2 rounded-pill d-flex align-items-center nav-link" title="Thema wechseln" aria-label="Thema wechseln">
-                        <i id="theme-icon" class="bi bi-moon"></i>
-                    </button>
-                    <button id="theme-reset" class="btn px-3 py-2 rounded-pill d-flex align-items-center nav-link" title="Auf Geräte-Theme zurücksetzen" aria-label="Auf Geräte-Theme zurücksetzen">
-                        <i class="bi bi-arrow-counterclockwise"></i>
-                    </button>
-                </li>
             </ul>
         </div>
     </div>

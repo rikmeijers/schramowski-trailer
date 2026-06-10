@@ -25,80 +25,30 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-document.addEventListener("contextmenu", function(event) {
-    event.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("form[data-prevent-double-submit]").forEach(function (form) {
+        form.addEventListener("submit", function (e) {
+            var btn = form.querySelector('button[type="submit"]');
+            if (!btn) return;
+            if (btn.disabled) {
+                e.preventDefault();
+                return;
+            }
+            btn.disabled = true;
+            btn.dataset.originalHtml = btn.innerHTML;
+            var label = btn.dataset.loadingText || 'Wird gespeichert…';
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>' + label;
+        });
+    });
 });
 
+// Light mode only — dark mode is disabled for this project.
 document.addEventListener("DOMContentLoaded", function () {
-    const themeSwitcher = document.getElementById("theme-switcher");
-    const themeReset = document.getElementById("theme-reset");
-    const themeIcon = document.getElementById("theme-icon");
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    if (themeReset) {
-        themeReset.addEventListener("click", function () {
-            clearUserTheme();
-            setTheme(mediaQuery.matches ? "dark" : "light");
-        });
-    }
+    try { localStorage.removeItem("theme"); } catch (e) {}
 
-    function setTheme(theme) {
-        if (theme === "dark") {
-            document.documentElement.setAttribute("data-theme", "dark");
-            document.documentElement.setAttribute("data-bs-theme", "dark");
-            themeIcon.classList.remove("bi-moon");
-            themeIcon.classList.add("bi-sun");
-        } else {
-            document.documentElement.setAttribute("data-theme", "light");
-            document.documentElement.setAttribute("data-bs-theme", "light");
-            themeIcon.classList.remove("bi-sun");
-            themeIcon.classList.add("bi-moon");
-        }
-    }
+    document.documentElement.setAttribute("data-bs-theme", "light");
 
-    function getUserTheme() {
-        return localStorage.getItem("theme");
-    }
-
-    function setUserTheme(theme) {
-        localStorage.setItem("theme", theme);
-    }
-
-    function clearUserTheme() {
-        localStorage.removeItem("theme");
-    }
-
-    function applyTheme() {
-        const userTheme = getUserTheme();
-        if (userTheme) {
-            setTheme(userTheme);
-        } else {
-            setTheme(mediaQuery.matches ? "dark" : "light");
-        }
-    }
-
-    applyTheme();
-
-    if (themeSwitcher) {
-        themeSwitcher.addEventListener("click", function () {
-            let currentTheme = document.documentElement.getAttribute("data-theme");
-            let newTheme = currentTheme === "dark" ? "light" : "dark";
-            setTheme(newTheme);
-            setUserTheme(newTheme);
-            themeSwitcher.blur();
-        });
-    }
-
-    if (themeReset) {
-        themeReset.addEventListener("click", function () {
-            clearUserTheme();
-            setTheme(mediaQuery.matches ? "dark" : "light");
-            themeReset.blur();
-        });
-    }
-
-    mediaQuery.addEventListener("change", function (e) {
-        if (!getUserTheme()) {
-            setTheme(e.matches ? "dark" : "light");
-        }
-    });
+    window.setTimeout(function () {
+        document.documentElement.setAttribute("data-bs-theme", "light");
+    }, 0);
 });
