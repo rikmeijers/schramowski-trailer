@@ -80,7 +80,7 @@
                 </div>
 
 
-                <div class="mb-3 d-flex justify-content-between align-items-center">
+                <div class="mb-3">
                     @if(\App\Helpers\CookieConsent::accepted())
                         <div class="form-check">
                             <input class="form-check-input me-2" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
@@ -89,13 +89,16 @@
                     @else
                         <input class="d-none" type="checkbox" name="remember" id="remember">
                     @endif
-                    <a href="{{ route('password.forgot.form') }}" class="text-decoration-none">Passwort vergessen?</a>
                 </div>
 
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-box-arrow-in-right me-2"></i> Anmelden
                     </button>
+                </div>
+
+                <div class="text-center mt-2">
+                    <a href="{{ route('password.forgot.form') }}" class="auth-forgot-link text-decoration-none">Passwort vergessen?</a>
                 </div>
             </form>
         </div>

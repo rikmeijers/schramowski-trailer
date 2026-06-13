@@ -74,3 +74,13 @@ body {
 .auth-btn-active:hover {
     cursor: default;
 }
+
+.auth-forgot-link {
+    font-size: 0.8125rem;
+    color: #64748B;
+    transition: color 0.15s ease;
+}
+
+.auth-forgot-link:hover {
+    color: #334155;
+}
