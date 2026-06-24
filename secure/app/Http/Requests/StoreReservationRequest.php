@@ -34,6 +34,9 @@ class StoreReservationRequest extends FormRequest
             'service_lehr' => ['sometimes', 'boolean'],
             'service_paket' => ['sometimes', 'boolean'],
 
+            // Skip the 1-day load/unload buffer for this reservation.
+            'ignore_buffer' => ['sometimes', 'boolean'],
+
             'customer_number' => ['nullable', 'string', 'max:50'],
             'company_name' => ['nullable', 'string', 'max:255'],
 
@@ -48,6 +51,11 @@ class StoreReservationRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        // Unchecked checkboxes are not sent by browsers; normalize to a boolean.
+        $this->merge([
+            'ignore_buffer' => (bool) $this->input('ignore_buffer', false),
+        ]);
+
         // Normaliseer partial_paid_amount: '12,50' -> '12.50' (punt blijft punt)
         $rawPartial = $this->input('partial_paid_amount');
         if (is_string($rawPartial)) {

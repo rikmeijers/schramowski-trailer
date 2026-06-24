@@ -20,6 +20,8 @@ class TrailerReservationController extends Controller
     {
         $excludeReservationId = $request->filled('exclude') ? (int) $request->query('exclude') : null;
 
+        // Return the raw reservation dates. The 1-day load/unload buffer is applied
+        // client-side so it can be toggled off via the "ignore buffer" checkbox.
         $blocked = Reservation::query()
             ->where('trailer_id', $trailerId)
             ->whereNotNull('start_date')
@@ -27,19 +29,15 @@ class TrailerReservationController extends Controller
             ->when($excludeReservationId, fn ($q) => $q->where('id', '!=', $excludeReservationId))
             ->orderBy('start_date')
             ->get(['start_date', 'end_date'])
-            ->map(function (Reservation $r) {
-                $startBuffered = optional($r->start_date)?->copy()?->subDay();
-                $endBuffered = optional($r->end_date)?->copy()?->addDay();
-
-                return [
-                    'start' => optional($startBuffered)->format('Y-m-d'),
-                    'end' => optional($endBuffered)->format('Y-m-d'),
-                ];
-            })
+            ->map(fn (Reservation $r) => [
+                'start' => optional($r->start_date)->format('Y-m-d'),
+                'end' => optional($r->end_date)->format('Y-m-d'),
+            ])
             ->values();
 
         return response()->json([
             'blocked' => $blocked,
+            'bufferDays' => 1,
         ]);
     }
 
@@ -155,12 +153,14 @@ class TrailerReservationController extends Controller
 
         // Fast pre-check (helps return the correct error even if transaction fails for other reasons)
         $trailerId = (int) $data['trailer_id'];
-        // We enforce a 1-day buffer on BOTH SIDES of each reservation.
+        // We enforce a 1-day buffer on BOTH SIDES of each reservation (load/unload day).
         // Existing reservation [S..E] blocks [S-1 .. E+1].
         // Overlap check between new [start..end] and existing buffered window:
-        // existing.start_date <= (new_end + 1) AND existing.end_date >= (new_start - 1)
-        $startMinusOne = (clone $start)->subDay();
-        $endPlusOne = (clone $endInclusive)->addDay();
+        // existing.start_date <= (new_end + buffer) AND existing.end_date >= (new_start - buffer)
+        // When "ignore_buffer" is set the buffer is 0, so only a real date overlap blocks.
+        $bufferDays = ($data['ignore_buffer'] ?? false) ? 0 : 1;
+        $startMinusOne = (clone $start)->subDays($bufferDays);
+        $endPlusOne = (clone $endInclusive)->addDays($bufferDays);
         $overlapExistsPre = Reservation::query()
             ->where('trailer_id', $trailerId)
             ->whereNotNull('start_date')
@@ -176,9 +176,9 @@ class TrailerReservationController extends Controller
         }
 
         try {
-            $reservation = DB::transaction(function () use ($data, $start, $endInclusive, $request, $trailerId) {
-                $startMinusOneT = (clone $start)->subDay();
-                $endPlusOneT = (clone $endInclusive)->addDay();
+            $reservation = DB::transaction(function () use ($data, $start, $endInclusive, $request, $trailerId, $bufferDays) {
+                $startMinusOneT = (clone $start)->subDays($bufferDays);
+                $endPlusOneT = (clone $endInclusive)->addDays($bufferDays);
 
                 $overlapExists = Reservation::query()
                     ->where('trailer_id', $trailerId)
@@ -215,6 +215,8 @@ class TrailerReservationController extends Controller
                     'service_selber_beladen' => (bool) ($data['service_selber_beladen'] ?? false),
                     'service_lehr' => (bool) ($data['service_lehr'] ?? false),
                     'service_paket' => (bool) ($data['service_paket'] ?? false),
+
+                    'ignore_buffer' => (bool) ($data['ignore_buffer'] ?? false),
 
                     'notes' => $data['notes'] ?? null,
                 ]);
@@ -274,8 +276,9 @@ class TrailerReservationController extends Controller
             $updated = DB::transaction(function () use ($reservation, $data, $start, $endInclusive, $request) {
                 $trailerId = (int) $data['trailer_id'];
 
-                $startMinusOneU = (clone $start)->subDay();
-                $endPlusOneU = (clone $endInclusive)->addDay();
+                $bufferDays = ($data['ignore_buffer'] ?? false) ? 0 : 1;
+                $startMinusOneU = (clone $start)->subDays($bufferDays);
+                $endPlusOneU = (clone $endInclusive)->addDays($bufferDays);
 
                 $overlapExists = Reservation::query()
                     ->where('id', '!=', $reservation->id)
@@ -313,6 +316,8 @@ class TrailerReservationController extends Controller
                     'service_selber_beladen' => (bool) ($data['service_selber_beladen'] ?? false),
                     'service_lehr' => (bool) ($data['service_lehr'] ?? false),
                     'service_paket' => (bool) ($data['service_paket'] ?? false),
+
+                    'ignore_buffer' => (bool) ($data['ignore_buffer'] ?? false),
 
                     'notes' => $data['notes'] ?? null,
                 ]);

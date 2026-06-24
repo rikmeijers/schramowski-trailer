@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const trailerSelect = document.querySelector('select[name="trailer_id"]');
   const startInput = document.querySelector('input[name="start_date"]');
   const endInput = document.querySelector('input[name="end_date"]');
+  const ignoreBufferInput = document.querySelector('input[type="checkbox"][name="ignore_buffer"]');
   const form = trailerSelect?.closest('form');
   const reservationId = form?.dataset?.reservationId ? Number(form.dataset.reservationId) : null;
   const isEdit = Number.isFinite(reservationId) && reservationId > 0;
@@ -41,6 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   let blocked = [];
+  // Buffer (load/unload days) applied around each existing reservation.
+  // Server tells us the default; the "ignore buffer" checkbox overrides it to 0.
+  let serverBufferDays = 1;
+
+  function effectiveBufferDays() {
+    if (ignoreBufferInput && ignoreBufferInput.checked) return 0;
+    return serverBufferDays;
+  }
 
   function startOfDay(d) {
     const x = new Date(d);
@@ -56,12 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getBufferedRange(r) {
-    // Treat the incoming range as the already-buffered blocked window.
+    // The server sends the raw reservation dates; apply the buffer here so the
+    // "ignore buffer" checkbox can toggle it without re-fetching.
     const from = parseYmd(r.start);
     const to = parseYmd(r.end);
     if (!from || !to) return null;
 
-    return { from, to };
+    const buffer = effectiveBufferDays();
+    return { from: addDays(from, -buffer), to: addDays(to, buffer) };
   }
 
   function expandBlockedToDates() {
@@ -293,9 +304,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
 
       blocked = Array.isArray(data?.blocked) ? data.blocked : [];
+      serverBufferDays = Number.isFinite(Number(data?.bufferDays)) ? Number(data.bufferDays) : 1;
 
-      // No change to server data, but log that we apply a 1-day buffer after each reservation
-      logDebug('blocked loaded (raw)', blocked);
+      // Raw reservation dates; the buffer is applied client-side (see getBufferedRange).
+      logDebug('blocked loaded (raw)', blocked, 'bufferDays', serverBufferDays);
 
       logDebug('blocked loaded', blocked);
 
@@ -342,6 +354,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   startInput.addEventListener('change', applyValidity);
   endInput.addEventListener('change', applyValidity);
+
+  // Toggling the buffer override re-evaluates which dates are blocked.
+  if (ignoreBufferInput) {
+    ignoreBufferInput.addEventListener('change', () => {
+      syncPickerDisable();
+      applyValidity();
+    });
+  }
 
   const paymentStatusSelect = document.querySelector('select[name="payment_status"][data-payment-status]');
   const partialPaidWrapper = document.querySelector('[data-partial-paid-wrapper]');

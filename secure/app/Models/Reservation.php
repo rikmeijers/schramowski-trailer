@@ -42,6 +42,10 @@ class Reservation extends Model
         'service_lehr',
         'service_paket',
 
+        // When true, the 1-day load/unload buffer is skipped for this reservation
+        // so it can sit directly adjacent to another booking.
+        'ignore_buffer',
+
         // Legacy (kept for compatibility with older data)
         'starts_at',
         'ends_at',
@@ -58,6 +62,7 @@ class Reservation extends Model
         'service_selber_beladen' => 'boolean',
         'service_lehr' => 'boolean',
         'service_paket' => 'boolean',
+        'ignore_buffer' => 'boolean',
         'partial_paid_amount' => 'decimal:2',
     ];
 

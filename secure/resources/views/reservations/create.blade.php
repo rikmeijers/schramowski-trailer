@@ -91,6 +91,21 @@
             </div>
 
             <div class="col-12">
+                <div class="form-check">
+                    <input type="hidden" name="ignore_buffer" value="0" />
+                    <input class="form-check-input" type="checkbox" name="ignore_buffer" id="ignore_buffer" value="1"
+                           @checked(old('ignore_buffer'))>
+                    <label class="form-check-label fw-semibold" for="ignore_buffer">
+                        <i class="bi bi-unlock me-1"></i> Pufferzeit ignorieren (Ein-/Ausladetag)
+                    </label>
+                    <div class="form-text text-body-secondary">
+                        Normalerweise bleibt je 1 Tag vor und nach einer Reservierung frei (Ein-/Ausladen).
+                        Aktivieren, um diese Reservierung direkt an eine andere Buchung anschließen zu lassen.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
                 <hr class="my-2" />
                 <h5 class="fw-bold mb-0">Kundendaten</h5>
                 <p class="text-body-secondary mb-0">Diese Daten werden bei der Reservierung gespeichert.</p>
