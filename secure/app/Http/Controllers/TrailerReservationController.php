@@ -12,10 +12,60 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class TrailerReservationController extends Controller
 {
+    private function supportsReservationColumn(string $column): bool
+    {
+        static $columns = null;
+
+        if ($columns === null) {
+            $columns = array_flip(Schema::getColumnListing('reservations'));
+        }
+
+        return isset($columns[$column]);
+    }
+
+    private function reservationPayload(array $data, Carbon $start, Carbon $endInclusive, Request $request, int $trailerId): array
+    {
+        $payload = [
+            'trailer_id' => $trailerId,
+            'user_id' => $request->user()->id,
+
+            'customer_number' => $data['customer_number'] ?? null,
+            'company_name' => $data['company_name'] ?? null,
+
+            'customer_first_name' => $data['customer_first_name'],
+            'customer_last_name' => $data['customer_last_name'],
+            'customer_phone' => $data['customer_phone'],
+            'customer_email' => $data['customer_email'],
+
+            'start_date' => $start->toDateString(),
+            'end_date' => $endInclusive->toDateString(),
+
+            'status' => $data['status'],
+            'payment_status' => $data['payment_status'],
+
+            'service_selber_beladen' => (bool) ($data['service_selber_beladen'] ?? false),
+            'service_lehr' => (bool) ($data['service_lehr'] ?? false),
+            'service_paket' => (bool) ($data['service_paket'] ?? false),
+
+            'notes' => $data['notes'] ?? null,
+        ];
+
+        if ($this->supportsReservationColumn('partial_paid_amount')) {
+            $payload['partial_paid_amount'] = $data['partial_paid_amount'] ?? null;
+        }
+
+        if ($this->supportsReservationColumn('ignore_buffer')) {
+            $payload['ignore_buffer'] = (bool) ($data['ignore_buffer'] ?? false);
+        }
+
+        return $payload;
+    }
+
     public function blockedDates(Request $request, int $trailerId): JsonResponse
     {
         $excludeReservationId = $request->filled('exclude') ? (int) $request->query('exclude') : null;
@@ -193,33 +243,9 @@ class TrailerReservationController extends Controller
                     return null;
                 }
 
-                return Reservation::create([
-                    'trailer_id' => $trailerId,
-                    'user_id' => $request->user()->id,
-
-                    'customer_number' => $data['customer_number'] ?? null,
-                    'company_name' => $data['company_name'] ?? null,
-
-                    'customer_first_name' => $data['customer_first_name'],
-                    'customer_last_name' => $data['customer_last_name'],
-                    'customer_phone' => $data['customer_phone'],
-                    'customer_email' => $data['customer_email'],
-
-                    'start_date' => $start->toDateString(),
-                    'end_date' => $endInclusive->toDateString(),
-
-                    'status' => $data['status'],
-                    'payment_status' => $data['payment_status'],
-                    'partial_paid_amount' => $data['partial_paid_amount'] ?? null,
-
-                    'service_selber_beladen' => (bool) ($data['service_selber_beladen'] ?? false),
-                    'service_lehr' => (bool) ($data['service_lehr'] ?? false),
-                    'service_paket' => (bool) ($data['service_paket'] ?? false),
-
-                    'ignore_buffer' => (bool) ($data['ignore_buffer'] ?? false),
-
-                    'notes' => $data['notes'] ?? null,
-                ]);
+                return Reservation::create(
+                    $this->reservationPayload($data, $start, $endInclusive, $request, $trailerId)
+                );
             });
         } catch (\Throwable $e) {
             // Don't mask other errors as “not available”
@@ -294,33 +320,9 @@ class TrailerReservationController extends Controller
                     return false;
                 }
 
-                $reservation->fill([
-                    'trailer_id' => $trailerId,
-                    'user_id' => $request->user()->id,
-
-                    'customer_number' => $data['customer_number'] ?? null,
-                    'company_name' => $data['company_name'] ?? null,
-
-                    'customer_first_name' => $data['customer_first_name'],
-                    'customer_last_name' => $data['customer_last_name'],
-                    'customer_phone' => $data['customer_phone'],
-                    'customer_email' => $data['customer_email'],
-
-                    'start_date' => $start->toDateString(),
-                    'end_date' => $endInclusive->toDateString(),
-
-                    'status' => $data['status'],
-                    'payment_status' => $data['payment_status'],
-                    'partial_paid_amount' => $data['partial_paid_amount'] ?? null,
-
-                    'service_selber_beladen' => (bool) ($data['service_selber_beladen'] ?? false),
-                    'service_lehr' => (bool) ($data['service_lehr'] ?? false),
-                    'service_paket' => (bool) ($data['service_paket'] ?? false),
-
-                    'ignore_buffer' => (bool) ($data['ignore_buffer'] ?? false),
-
-                    'notes' => $data['notes'] ?? null,
-                ]);
+                $reservation->fill(
+                    $this->reservationPayload($data, $start, $endInclusive, $request, $trailerId)
+                );
 
                 $reservation->save();
                 return true;
