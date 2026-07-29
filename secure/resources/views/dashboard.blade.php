@@ -1,7 +1,7 @@
 @extends('shared.layout')
 
 @section('customStyles')
-    <link rel="stylesheet" href="{{ url('/assets/css/dashboard-calendar.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('/assets/css/dashboard-calendar.css') }}">
     <style>
         /* Sticky table header */
         .table-scroll-wrapper {
@@ -202,7 +202,7 @@
                                         data-id="{{ $reservation->id }}"
                                         data-trailer="{{ $reservation->trailer->name ?? '' }}"
                                         data-customer-number="{{ $reservation->customer_number ?? '' }}"
-                                        data-customer="{{ $reservation->customer_first_name }} {{ $reservation->customer_last_name }}"
+                                        data-customer="{{ $reservation->customer_first_name }} {{ $reservation->customer_last_name }} {{ $reservation->company_name }}"
                                         data-from="{{ optional($start)->format('Y-m-d') }}"
                                         data-to="{{ optional($endInclusive)->format('Y-m-d') }}"
                                         data-status="{{ $reservation->status }}"
@@ -210,7 +210,12 @@
                                         <td class="fw-semibold">{{ $reservation->id }}</td>
                                         <td>{{ $reservation->trailer->name ?? '-' }}</td>
                                         <td>{{ $reservation->customer_number ?? '-' }}</td>
-                                        <td>{{ $reservation->customer_first_name }} {{ $reservation->customer_last_name }}</td>
+                                        <td>
+                                            <div>{{ $reservation->customer_first_name }} {{ $reservation->customer_last_name }}</div>
+                                            @if($reservation->company_name)
+                                                <div class="text-body-secondary small">{{ $reservation->company_name }}</div>
+                                            @endif
+                                        </td>
                                         <td>{{ optional($start)->format('d-m-Y') }}</td>
                                         <td>{{ optional($endInclusive)->format('d-m-Y') }}</td>
                                         <td>
@@ -280,7 +285,7 @@
 @endsection
 
 @section('customScripts')
-    <script src="{{ url('/assets/js/dashboard-calendar.js') }}"></script>
+    <script src="{{ versioned_asset('/assets/js/dashboard-calendar.js') }}"></script>
     <script>
         function switchView(view) {
             var tableView = document.getElementById('table-view');

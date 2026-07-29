@@ -86,6 +86,9 @@
                             <div>
                                 <div class="ui-trailer-meta">Kunde</div>
                                 <div class="fw-semibold">{{ $reservation->customer_first_name }} {{ $reservation->customer_last_name }}</div>
+                                @if($reservation->company_name)
+                                    <div class="text-body-secondary small">{{ $reservation->company_name }}</div>
+                                @endif
                             </div>
                         @else
                             <div>

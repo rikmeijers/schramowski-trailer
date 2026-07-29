@@ -162,8 +162,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                             var rvEndMinusOne = addDays(rvEnd, -1);
                             var barLabel = escapeHtml(rv.customer_last_name);
-                            var titleText = rv.customer_first_name + " " + rv.customer_last_name + " | " +
-                                formatDateShort(rvStart) + " – " + formatDateShort(rvEndMinusOne);
+                            var titleText = rv.customer_first_name + " " + rv.customer_last_name;
+                            if (rv.company_name) titleText += " (" + rv.company_name + ")";
+                            titleText += " | " + formatDateShort(rvStart) + " – " + formatDateShort(rvEndMinusOne);
 
                             var detailUrl = detailUrlTemplate.replace("__ID__", rv.id);
                             var barWidth = "calc(" + (span * 100) + "% + " + ((span - 1)) + "px)";
@@ -322,8 +323,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                             var rvEndMinusOne = addDays(rvEnd, -1);
                             var barLabel = escapeHtml(rv.customer_last_name);
-                            var titleText = rv.customer_first_name + " " + rv.customer_last_name + " | " +
-                                formatDateShort(rvStart) + " – " + formatDateShort(rvEndMinusOne);
+                            var titleText = rv.customer_first_name + " " + rv.customer_last_name;
+                            if (rv.company_name) titleText += " (" + rv.company_name + ")";
+                            titleText += " | " + formatDateShort(rvStart) + " – " + formatDateShort(rvEndMinusOne);
 
                             var detailUrl = detailUrlTemplate.replace("__ID__", rv.id);
                             var barWidth = "calc(" + (span * 100) + "% + " + ((span - 1)) + "px)";

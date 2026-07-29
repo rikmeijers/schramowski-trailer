@@ -9,7 +9,7 @@
             <p class="text-body-secondary mt-3 m-0">{{ config('app.name', 'App') }}</p>
             <p class="text-body-secondary m-0 mb-2">
                 <span class="badge rounded-pill version-badge fw-semibold px-3 py-2">
-                    v{{ env('APP_VERSION', '1.0.0') }}
+                    v{{ config('app.version', '1.0.0') }}
                 </span>
             </p>
             <p class="text-body-secondary m-0">&copy; {{ \Carbon\Carbon::now()->year }}</p>

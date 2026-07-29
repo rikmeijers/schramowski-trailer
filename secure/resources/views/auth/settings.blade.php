@@ -6,7 +6,7 @@
 @endsection
 
 @section('customStyles')
-    <link rel="stylesheet" href="{{ url('/assets/css/settings.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('/assets/css/settings.css') }}">
 @endsection
 
 @section('content')

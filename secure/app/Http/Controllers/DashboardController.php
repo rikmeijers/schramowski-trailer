@@ -135,7 +135,7 @@ class DashboardController extends Controller
             ->orderBy('start_date')
             ->get([
                 'id', 'trailer_id', 'start_date', 'end_date',
-                'customer_first_name', 'customer_last_name',
+                'customer_first_name', 'customer_last_name', 'company_name',
                 'status', 'payment_status',
             ]);
 

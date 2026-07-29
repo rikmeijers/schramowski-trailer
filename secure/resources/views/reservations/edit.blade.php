@@ -234,5 +234,5 @@
 @endsection
 
 @section('customScripts')
-    <script src="{{ url('/assets/js/reservations-form.js') }}"></script>
+    <script src="{{ versioned_asset('/assets/js/reservations-form.js') }}"></script>
 @endsection

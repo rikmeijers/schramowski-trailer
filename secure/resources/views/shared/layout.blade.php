@@ -10,24 +10,24 @@
 
     @yield('customSeoTags')
 
-    <link rel="manifest" href="{{ url('/assets/manifest.json') }}">
+    <link rel="manifest" href="{{ versioned_asset('/assets/manifest.json') }}">
 
-    <link rel="shortcut icon" href="{{ url('favicon.ico') }}">
-    <link rel="icon" href="{{ url('/assets/images/branding/icon.png') }}">
-    <link rel="apple-touch-icon" href="{{ url('/assets/images/branding/icon.png') }}">
+    <link rel="shortcut icon" href="{{ versioned_asset('favicon.ico') }}">
+    <link rel="icon" href="{{ versioned_asset('/assets/images/branding/icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ versioned_asset('/assets/images/branding/icon.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ url('/assets/css/core/root.css') }}">
-    <link rel="stylesheet" href="{{ url('/assets/css/core/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ url('/assets/css/core/bootstrap-icons.min.css') }}">
-    <link rel="stylesheet" href="{{ url('/assets/css/core/forms.min.css') }}">
-    <link rel="stylesheet" href="{{ url('/assets/css/core/cookies.min.css') }}">
-    <link rel="stylesheet" href="{{ url('/assets/css/core/header.min.css') }}">
-    <link rel="stylesheet" href="{{ url('/assets/css/core/ui.css') }}">
-    <link rel="stylesheet" href="{{ url('/assets/css/global.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('/assets/css/core/root.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('/assets/css/core/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('/assets/css/core/bootstrap-icons.min.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('/assets/css/core/forms.min.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('/assets/css/core/cookies.min.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('/assets/css/core/header.min.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('/assets/css/core/ui.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('/assets/css/global.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     @yield('customStyles')
@@ -54,13 +54,13 @@
         </footer>
     @endif
 
-    <script src="{{ url('/assets/js/core/jquery.min.js') }}"></script>
-    <script src="{{ url('/assets/js/core/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ url('/assets/js/core/cookies.min.js') }}"></script>
-    <script src="{{ url('/assets/js/global.js') }}"></script>
+    <script src="{{ versioned_asset('/assets/js/core/jquery.min.js') }}"></script>
+    <script src="{{ versioned_asset('/assets/js/core/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ versioned_asset('/assets/js/core/cookies.min.js') }}"></script>
+    <script src="{{ versioned_asset('/assets/js/global.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="{{ url('/assets/js/flatpickr-global.js') }}"></script>
-    <script src="{{ url('/assets/js/flatpickr-bootstrap-dropdown-fix.js') }}"></script>
+    <script src="{{ versioned_asset('/assets/js/flatpickr-global.js') }}"></script>
+    <script src="{{ versioned_asset('/assets/js/flatpickr-bootstrap-dropdown-fix.js') }}"></script>
 
     @yield('customScripts')
 </body>

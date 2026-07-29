@@ -6,7 +6,7 @@
 @endsection
 
 @section('customStyles')
-    <link rel="stylesheet" href="{{ url('/assets/css/auth.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('/assets/css/auth.css') }}">
 @endsection
 
 @section('content')
